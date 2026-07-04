@@ -29,7 +29,7 @@ def morse_menu() -> None:
             print(text_to_morse(user_text))
         elif user_option == '2':
             print("each code separate by 'space', words separate by '/'")
-            user_morse: str = input('Enter morse code').upper()
+            user_morse: str = input('Enter morse code\n:').upper()
             # morse_to_text returns the translation, so the menu prints it.
             print(morse_to_text(user_morse))
         elif user_option == 'q':
@@ -41,16 +41,27 @@ def morse_menu() -> None:
 
 def morse_to_text(user_morse) -> str:
     """Translate Morse code into normal text."""
-    # Store decoded letters before joining them into the final text.
+    
+    spaced_morse: str = user_morse.replace('/', ' / ')
+    cleaned_morse: list[str] = spaced_morse.split()
     translation: list[str] = []
-
     # Reverse lookup: compare the user's Morse code with dictionary values.
     # When the value matches, append the matching key, which is the normal letter.
-    for i in user_morse:
+    for i in cleaned_morse:
+        if i == '/':
+            translation.append(' ')
+            continue
+
         for letter, morse_code in letters_to_morse.items():
             if morse_code == i:
                 translation.append(letter)
+                break
+        if i not in letters_to_morse.values():
+            translation.append('&')
         
+                        
+    final_translation: str = ''.join(translation)
+    return final_translation   
 
 
 def text_to_morse(user_text) -> str:
@@ -66,7 +77,8 @@ def text_to_morse(user_text) -> str:
         elif i == ' ':
             # Use / to show a word gap in Morse code.
             translation.append('/')
-
+        else:
+            translation.append('&')
     morse_translation = ' '.join(translation)        
     return morse_translation
 
